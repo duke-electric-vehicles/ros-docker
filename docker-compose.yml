@@ -1,0 +1,28 @@
+version: '2'
+
+networks:
+  ros:
+    driver: bridge
+
+services:
+  master:
+    image: dukeev/ros
+    command: stdbuf -o L roscore
+    networks:
+      - ros
+    restart: always
+  
+  workspace:
+    depends_on:
+      - master
+    image: dukeev/ros
+    environment:
+      - "ROS_MASTER_URI=http://master:11311"
+      - "ROS_HOSTNAME=ros_docker_workspace_1"
+    volumes:
+      - ./catkin_ws:/root/catkin_ws/
+    command: tail -f /dev/null
+    networks:
+      - ros
+    
+
